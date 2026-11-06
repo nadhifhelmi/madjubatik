@@ -217,6 +217,7 @@ html.js .rows li:not(.on) .desc{display:none}
 .v-rows dd{margin:0;font-size:var(--s-small);display:flex;flex-direction:column;gap:2px;font-variant-numeric:tabular-nums}
 .v-rows .today{font-weight:500}
 .v-day{white-space:nowrap}
+.v-special{color:var(--accent);font-weight:500;white-space:normal}
 .v-note{color:var(--muted)}
 .v-rows a{font-weight:500}
 .v-acts{display:flex;flex-wrap:wrap;align-items:center;gap:14px 28px}
@@ -400,7 +401,7 @@ footer{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;mi
       <p class="v-now" id="v-now" hidden><span class="v-dot" aria-hidden="true"></span><span id="v-now-t"></span></p>
       <address>Jl. Sulawesi No. 19, Dauh Puri Kangin<br>Denpasar Barat, Bali 80112</address>
       <dl class="v-rows">
-        <div><dt>Opening hours</dt><dd><span class="v-day" data-days="mon-sat">Monday to Saturday, 09.00–17.00</span><span class="v-day" data-days="sun">Sunday, closed</span><span class="v-note">On holidays, <a href="https://wa.me/6289636371637?text=Hi%20Madju%2C%20are%20you%20open%20today%3F" target="_blank" rel="noopener">message us</a> first.</span></dd></div>
+        <div><dt>Opening hours</dt><dd id="v-hours"><span class="v-day" data-days="mon-sat">Monday to Saturday, 09.00–17.00</span><span class="v-day" data-days="sun">Sunday, closed</span><span class="v-note">On holidays, <a href="https://wa.me/6289636371637?text=Hi%20Madju%2C%20are%20you%20open%20today%3F" target="_blank" rel="noopener">message us</a> first.</span></dd></div>
         <div><dt>Finding us</dt><dd>Look for the two brown signs over the door: Maju Batik Fabrics and the old Toko Madju.</dd></div>
         <div><dt>Inside</dt><dd>Cotton on the left wall, jelly rolls and bundles at the back. We cut to your length at the counter.</dd></div>
         <div><dt>WhatsApp and phone</dt><dd><a href="tel:+6289636371637">0896-3637-1637</a></dd></div>
@@ -426,7 +427,7 @@ footer{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;mi
       <li><a href="https://instagram.com/madjubatik" target="_blank" rel="noopener">Instagram</a></li>
     </ul>
     <div class="foot-cols">
-      <div><b>Order</b>WhatsApp 0896-3637-1637<br>Monday to Saturday, 09.00–17.00</div>
+      <div><b>Order</b>WhatsApp 0896-3637-1637<br><span id="f-hours">Monday to Saturday, 09.00–17.00</span></div>
       <div><b>Follow</b><a href="https://instagram.com/madjubatik" target="_blank" rel="noopener">@madjubatik</a><br>New prints: <a href="https://instagram.com/madjubatik_catalog" target="_blank" rel="noopener">@madjubatik_catalog</a></div>
     </div>
     <p class="legal">© 2026 Madju Batik · Jl. Sulawesi 19, Denpasar, Bali</p>
@@ -482,18 +483,55 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   lis.forEach(l=>io.observe(l));
 })();
 
-/* Visit: open or closed right now, in Bali time (UTC+8, no daylight saving), so it is right wherever the visitor is */
-(function(){const box=document.getElementById('v-now'),txt=document.getElementById('v-now-t'),days=document.querySelectorAll('.v-day');
-  const NAMES=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],OPEN=9*60,SHUT=17*60;
-  const openDay=d=>d>=1&&d<=6;
-  function state(t){const b=new Date(t+8*3600e3),d=b.getUTCDay(),m=b.getUTCHours()*60+b.getUTCMinutes();
-    if(openDay(d)&&m>=OPEN&&m<SHUT)return{d,open:true,msg:'Open now · until 17.00'};
-    if(openDay(d)&&m<OPEN)return{d,open:false,msg:'Closed now · opens today at 09.00'};
-    let n=(d+1)%7,k=1;while(!openDay(n)){n=(n+1)%7;k++}
-    return{d,open:false,msg:'Closed now · opens '+(k===1?'tomorrow':NAMES[n])+' at 09.00'};}
-  function draw(){const st=state(Date.now());box.hidden=false;box.classList.toggle('shut',!st.open);txt.textContent=st.msg;
-    days.forEach(el=>el.classList.toggle('today',el.dataset.days==='sun'?st.d===0:openDay(st.d)));}
-  draw();setInterval(draw,60000);
+/* Visit: open or closed right now, and the opening hours. Uses the hours on Google Maps (hours.json, refreshed every hour
+   by .github/workflows/hours.yml, special days included) and falls back to the normal week when that file is missing or
+   old. All times are Bali time (UTC+8, no daylight saving), so it is right wherever the visitor is. */
+(function(){const box=document.getElementById('v-now'),txt=document.getElementById('v-now-t'),dd=document.getElementById('v-hours'),fh=document.getElementById('f-hours');
+  const DAY=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const TZ=8*3600e3,D=864e5,pad=n=>String(n).padStart(2,'0'),hm=(h,m)=>pad(h)+'.'+pad(m);
+  const WEEK=[1,2,3,4,5,6].map(d=>({open:{day:d,hour:9,minute:0},close:{day:d,hour:17,minute:0}}));
+  const at=(y,mo,d,h,mi)=>Date.UTC(y,mo-1,d,h,mi)-TZ, bali=t=>new Date(t+TZ);
+  const dayNo=t=>{const b=bali(t);return Date.UTC(b.getUTCFullYear(),b.getUTCMonth(),b.getUTCDate())/D};
+  const span=s=>{const a=bali(s[0]),b=bali(s[1]);return hm(a.getUTCHours(),a.getUTCMinutes())+'–'+hm(b.getUTCHours(),b.getUTCMinutes())};
+  function fromWeek(week,now){const out=[],b=bali(now);
+    for(let i=-1;i<9;i++){const x=new Date(Date.UTC(b.getUTCFullYear(),b.getUTCMonth(),b.getUTCDate()+i));
+      week.forEach(p=>{if(!p.open||!p.close||p.open.day!==x.getUTCDay())return;const y=x.getUTCFullYear(),mo=x.getUTCMonth()+1,d=x.getUTCDate();
+        const s=at(y,mo,d,p.open.hour||0,p.open.minute||0);let e=at(y,mo,d,p.close.hour||0,p.close.minute||0);if(e<=s)e+=D;out.push([s,e])})}
+    return out}
+  const fromDates=cur=>cur.filter(p=>p.open&&p.close&&p.open.date&&p.close.date).map(p=>[
+    at(p.open.date.year,p.open.date.month,p.open.date.day,p.open.hour||0,p.open.minute||0),
+    at(p.close.date.year,p.close.date.month,p.close.date.day,p.close.hour||0,p.close.minute||0)]);
+  function state(spans,now){spans=spans.slice().sort((a,b)=>a[0]-b[0]);
+    const on=spans.find(s=>now>=s[0]&&now<s[1]);
+    if(on){const c=bali(on[1]);return{open:true,msg:'Open now · until '+hm(c.getUTCHours(),c.getUTCMinutes())}}
+    const nx=spans.find(s=>s[0]>now);if(!nx)return{open:false,msg:'Closed now'};
+    const n=bali(nx[0]),k=dayNo(nx[0])-dayNo(now);
+    return{open:false,msg:'Closed now · opens '+(k===0?'today':k===1?'tomorrow':DAY[n.getUTCDay()])+' at '+hm(n.getUTCHours(),n.getUTCMinutes())}}
+  function weekLines(week){const h=DAY.map((_,d)=>{const ps=week.filter(p=>p.open&&p.close&&p.open.day===d);
+      return ps.length?ps.map(p=>hm(p.open.hour||0,p.open.minute||0)+'–'+hm(p.close.hour||0,p.close.minute||0)).join(', '):'closed'});
+    const o=[1,2,3,4,5,6,0],out=[];
+    for(let i=0;i<7;){let j=i;while(j<6&&h[o[j+1]]===h[o[i]])j++;out.push({days:o.slice(i,j+1),closed:h[o[i]]==='closed',text:DAY[o[i]]+(j>i?' to '+DAY[o[j]]:'')+', '+h[o[i]]});i=j+1}
+    return out}
+  let data=null;
+  function draw(){const now=Date.now(),today=bali(now).getUTCDay(),g=data;
+    const week=g&&Array.isArray(g.regular)&&g.regular.length?g.regular:WEEK;
+    let spans=g&&Array.isArray(g.current)?fromDates(g.current):[];
+    const fresh=spans.some(s=>s[1]>now);if(!fresh)spans=fromWeek(week,now);
+    const st=g&&g.businessStatus&&g.businessStatus!=='OPERATIONAL'?{open:false,msg:'Temporarily closed'}:state(spans,now);
+    box.hidden=false;box.classList.toggle('shut',!st.open);txt.textContent=st.msg;
+    if(!g){dd.querySelectorAll('.v-day').forEach(el=>el.classList.toggle('today',el.dataset.days==='sun'?today===0:today>=1&&today<=6));return}
+    const special=fresh&&Array.isArray(g.specialDays)?g.specialDays.map(x=>x&&x.date).filter(x=>x&&at(x.year,x.month,x.day,24,0)>now).map(x=>{
+      const day=at(x.year,x.month,x.day,0,0),ps=spans.filter(s=>dayNo(s[0])===dayNo(day));
+      return{day:dayNo(day),text:DAY[bali(day).getUTCDay()]+' '+x.day+' '+MON[x.month-1]+', '+(ps.length?ps.map(span).join(', '):'closed')}}):[];
+    const onSpecial=special.some(s=>s.day===dayNo(now)),lines=weekLines(week);
+    dd.innerHTML=lines.map(l=>'<span class="v-day'+(!onSpecial&&l.days.includes(today)?' today':'')+'">'+l.text+'</span>').join('')+
+      special.map(s=>'<span class="v-day v-special'+(s.day===dayNo(now)?' today':'')+'">'+s.text+'</span>').join('')+
+      '<span class="v-note">Hours from Google Maps</span>';
+    if(fh)fh.textContent=lines.filter(l=>!l.closed).map(l=>l.text).join('; ');}
+  draw();
+  fetch('hours.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&Array.isArray(j.current)){data=j;draw()}}).catch(()=>{});
+  setInterval(draw,60000);
   const c=document.getElementById('v-copy'),addr='Madju Batik, Jl. Sulawesi No. 19, Dauh Puri Kangin, Denpasar Barat, Bali 80112';
   if(navigator.clipboard&&window.isSecureContext){c.hidden=false;
     c.addEventListener('click',()=>navigator.clipboard.writeText(addr).then(()=>{c.textContent='Address copied';setTimeout(()=>{c.textContent='Copy address'},2000)},()=>{}));}
