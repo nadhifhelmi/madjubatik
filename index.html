@@ -76,7 +76,7 @@ em.s{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--acce
 .topbar nav a:hover{text-decoration-color:currentColor}
 .menuword{display:none;font:500 var(--s-small) var(--sans);background:none;border:0;padding:10px 0;color:var(--ink);cursor:pointer}
 .win{position:absolute;inset:0;z-index:1;clip-path:inset(0)}
-.win img{width:100%;height:100%;object-fit:cover;object-position:50% 45%}
+.win img{width:100%;height:100%;object-fit:cover;object-position:50% 24%}
 /* Blank window until the new photo comes in */
 .hero.blank{--hcol:var(--ink)!important;--scrim:0!important}
 .hero.blank .win{background:var(--field)}
@@ -118,12 +118,16 @@ html:not(.js) .hero{height:100vh;height:100svh}
 .panel{min-height:76vh;min-height:76svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding-block:24px 40px}
 .panel img{width:min(38vw, calc((100svh - 12.4vw - 170px) * .8));aspect-ratio:4/5;object-fit:cover}
 .panel p{font-size:var(--s-small);max-width:52ch;text-align:center}
+.pair{display:flex;gap:16px}
+.panel .pair img{width:min(28vw, calc((100svh - 12.4vw - 170px) * .8))}
 @media (max-width:759px){
   .run-head{grid-template-columns:1fr}
   .run-head h2{font-size:17.5vw}
   .run-head p{padding-bottom:0}
   .panel{min-height:78svh;padding-block:16px 32px}
   .panel img{width:min(80vw, calc((100svh - 17.5vw - 300px) * .8))}
+  .pair{gap:12px}
+  .panel .pair img{width:calc((100vw - var(--gut) - var(--gutR) - 12px) / 2)}
 }
 
 /* ---------- What we sell: sticky photograph, active list ---------- */
@@ -276,7 +280,7 @@ footer{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;mi
 <body>
 <main>
   <!-- Hero -->
-  <section class="hero blank" aria-labelledby="h1">
+  <section class="hero" aria-labelledby="h1">
     <div class="stage">
       <header class="topbar">
         <a class="wordmark" href="#top" id="top" aria-label="Madju Batik, home">MadjuBatik</a>
@@ -288,7 +292,7 @@ footer{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;mi
           <a href="#visit">Visit</a>
         </nav>
       </header>
-      <div class="win" id="win" aria-hidden="true"><!-- New photo goes here: <img src="img/…" width="…" height="…" alt="…">, then remove "blank" from the hero section --></div>
+      <div class="win" id="win"><img src="img/hero-cat.webp" width="1200" height="1600" alt="A calico shop cat resting on purple batik, with colourful fabric in the shop behind"></div>
       <div class="hero-copy">
         <h1 id="h1">Bali batik,<br>by the m<em class="s">e</em>tre</h1>
         <div class="hero-side">
@@ -308,7 +312,7 @@ footer{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;mi
     </div>
     <div class="panel wrap"><img class="rise" src="img/packs/shelf-red.webp" width="1050" height="1400" loading="lazy" alt="Shop shelves sorted by colour: blues on the top shelf, then reds, plums and pinks below"><p class="rise">Every wall is sorted by colour, so your blue is one look away.</p></div>
     <div class="panel wrap"><img class="rise" src="img/hands.webp" width="880" height="1100" loading="lazy" alt="Hands cutting a caramel batik print with orange scissors at the counter"><p class="rise">Cut to your length at the counter, then folded and packed by hand.</p></div>
-    <div class="panel wrap"><img class="rise" src="img/cat.webp" width="880" height="1100" loading="lazy" alt="The ginger and white shop cat stretched out on the tiled floor"><p class="rise">The shop cat keeps watch over the cotton wall.</p></div>
+    <div class="panel wrap"><div class="pair rise"><img src="img/cat-greens.webp" width="880" height="1100" loading="lazy" alt="A tortoiseshell shop cat sitting on a fan of green batik, from lime to deep forest green"><img src="img/cat-box.webp" width="800" height="1000" loading="lazy" alt="The ginger and white shop cat lying in a cardboard box, looking up"></div><p class="rise">The shop cats keep watch over the cotton wall.</p></div>
   </section>
 
   <!-- What we sell -->
