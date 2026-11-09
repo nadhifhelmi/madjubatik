@@ -512,13 +512,20 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   b.addEventListener('click',()=>{const o=n.classList.toggle('open');b.setAttribute('aria-expanded',o)});
   n.addEventListener('click',e=>{if(e.target.tagName==='A'){n.classList.remove('open');b.setAttribute('aria-expanded','false')}});})();
 
-/* Hero: the window opens to the edges (transforms only, so phones don't repaint the photo while scrolling) */
+/* Hero: the window opens to the edges. Where the browser can tie animations to scrolling (scroll-driven animations),
+   the browser runs the opening itself, in step with the finger; otherwise a scroll handler draws it. */
 (function(){
   const hero=document.querySelector('.hero'),win=document.getElementById('win');
   if(reduce)return;
   const stage=hero.querySelector('.stage'),inner=win.querySelector('.win-in'),copy=hero.querySelector('.hero-copy'),
     side=hero.querySelector('.hero-side'),tb=hero.querySelector('.topbar'),hint=hero.querySelector('.hero-hint');
+  const sd=!!(window.CSS&&CSS.supports('animation-timeline: scroll()')&&CSS.supports('animation-range: 0px 1px'));
+  const kf=document.createElement('style');document.head.appendChild(kf);
+  if(sd)document.documentElement.classList.add('sd');
   let g={},vis='';
+  function frame(p){const k=Math.pow(1-p,2),l=g.x*k,t=g.top*k,sx=(g.W-2*l)/g.W,sy=(g.H-t-g.bot*k)/g.H;
+    return [`translate(${l.toFixed(2)}px,${t.toFixed(2)}px) scale(${sx.toFixed(5)},${sy.toFixed(5)})`,
+            `scale(${(1/sx).toFixed(5)},${(1/sy).toFixed(5)}) translate(${(-l+g.dx*k).toFixed(2)}px,${(-t+g.dy*k).toFixed(2)}px)`]}
   function geom(){const vw=innerWidth,phone=vw<760,sw=stage.clientWidth||vw,vh=stage.clientHeight||innerHeight;let w,h,top,bot;
     if(phone){const sh=side.offsetHeight||150;w=sw*.78;h=w*1.25;top=Math.max(vh*.30,170);
       const room=vh-top-sh-18-44;if(h>room){h=Math.max(120,room);w=h/1.25}bot=vh-top-h}
@@ -527,22 +534,41 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
     if(!phone&&matchMedia('(min-aspect-ratio:1/1)').matches){const [nw,nh,fx,fy,py]=win.dataset.pan.split(' ').map(Number),
       s=Math.max(W/nw,H/nh),dw=nw*s,dh=nh*s,ox=(W-dw)/2,oy=(H-dh)*py;
       dx=Math.max(Math.min(W/2-(ox+fx*dw),x-ox),x+w-ox-dw);dy=Math.max(Math.min(top+h/2-(oy+fy*dh),top-oy),top+h-oy-dh)}
-    g={W,H,x,top,bot,dx,dy,run:vh*(phone?.7:1),fade:phone?5:2.4,y0:hero.offsetTop};
+    g={W,H,x,top,bot,dx,dy,run:vh*(phone?.7:1),fade:phone?8:2.4,y0:hero.offsetTop};
     hero.style.setProperty('--hb',g.bot+'px');
     hero.style.setProperty('--ht',Math.max(76,g.top-(vw*.105*2)-18)+'px');
-    hero.style.setProperty('--hs',(g.top+h+18)+'px');}
-  function draw(){const p=Math.min(1,Math.max(0,(scrollY-g.y0)/g.run)),k=Math.pow(1-p,2);
-    const l=g.x*k,t=g.top*k,sx=(g.W-2*l)/g.W,sy=(g.H-t-g.bot*k)/g.H;
-    win.style.transform=`translate(${l}px,${t}px) scale(${sx},${sy})`;
-    inner.style.transform=`scale(${1/sx},${1/sy}) translate(${-l+g.dx*k}px,${-t+g.dy*k}px)`;
-    const o=Math.max(0,1-p*g.fade),v=o<.02?'hidden':'visible';
+    hero.style.setProperty('--hs',(g.top+h+18)+'px');
+    if(sd){let a='',b='';for(let i=0;i<=24;i++){const p=i/24,[o,n]=frame(p),at=(p*100).toFixed(3)+'%';a+=`${at}{transform:${o}}`;b+=`${at}{transform:${n}}`}
+      const r0=g.y0+'px',r1=(g.y0+g.run)+'px',f1=(g.y0+g.run/g.fade)+'px',tl='animation-timeline:scroll(root);';
+      kf.textContent=`@keyframes mbWin{${a}}@keyframes mbIn{${b}}`+
+        `@keyframes mbCopy{to{opacity:0;visibility:hidden;transform:translateY(${(-60/g.fade).toFixed(1)}px)}}@keyframes mbFade{to{opacity:0;visibility:hidden}}`+
+        `html.sd .win{animation:mbWin linear both;${tl}animation-range:${r0} ${r1}}`+
+        `html.sd .win-in{animation:mbIn linear both;${tl}animation-range:${r0} ${r1}}`+
+        `html.sd .hero-copy{animation:mbCopy linear both;${tl}animation-range:${r0} ${f1}}`+
+        `html.sd .topbar,html.sd .hero-hint{animation:mbFade linear both;${tl}animation-range:${r0} ${f1}}`}}
+  function draw(){const p=Math.min(1,Math.max(0,(scrollY-g.y0)/g.run)),[o,n]=frame(p);
+    win.style.transform=o;inner.style.transform=n;
+    const op=Math.max(0,1-p*g.fade),v=op<.02?'hidden':'visible';
     if(v!==vis){vis=v;copy.style.visibility=v;tb.style.visibility=v;hint.style.visibility=v}
-    if(v==='visible'){copy.style.opacity=o;copy.style.transform=`translateY(${-p*60}px)`;tb.style.opacity=o;hint.style.opacity=o}
+    if(v==='visible'){copy.style.opacity=op;copy.style.transform=`translateY(${-p*60}px)`;tb.style.opacity=op;hint.style.opacity=op}
     else hint.style.opacity=0;}
-  let raf=0,dirty=false;const tick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;if(dirty){dirty=false;geom()}draw()})};
+  let raf=0,dirty=false;const tick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;if(dirty){dirty=false;geom()}if(!sd)draw()})};
   let lw=innerWidth,lh=stage.clientHeight;
-  geom();draw();addEventListener('resize',()=>{const w=innerWidth,h=stage.clientHeight;if(w===lw&&h===lh)return;lw=w;lh=h;dirty=true;tick()});
-  addEventListener('scroll',tick,{passive:true});
+  geom();if(!sd)draw();
+  addEventListener('resize',()=>{const w=innerWidth,h=stage.clientHeight;if(w===lw&&h===lh)return;lw=w;lh=h;dirty=true;tick()});
+  if(!sd)addEventListener('scroll',tick,{passive:true});
+})();
+
+/* Step inside: a slow glide into the shop instead of a jump */
+(function(){const a=document.querySelector('.hero-hint'),run=document.querySelector('.run');if(!a||!run)return;
+  a.addEventListener('click',e=>{if(reduce)return;e.preventDefault();
+    const el=document.documentElement,old=el.style.scrollBehavior,from=scrollY,d=run.getBoundingClientRect().top+scrollY-from,
+      dur=Math.min(2800,Math.max(1600,Math.abs(d)*1.1)),t0=performance.now();let stop=false;
+    const halt=()=>{stop=true};['wheel','touchstart','keydown'].forEach(t=>addEventListener(t,halt,{once:true,passive:true}));
+    el.style.scrollBehavior='auto';
+    requestAnimationFrame(function step(now){if(stop){el.style.scrollBehavior=old;return}
+      const q=Math.min(1,(now-t0)/dur),ez=q<.5?4*q*q*q:1-Math.pow(-2*q+2,3)/2;scrollTo(0,from+d*ez);
+      if(q<1)requestAnimationFrame(step);else el.style.scrollBehavior=old});});
 })();
 
 /* Load and decode the photos right under the opening before the first scroll, so it doesn't stutter */
