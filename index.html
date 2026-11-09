@@ -78,7 +78,8 @@ em.s{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--acce
 .topbar nav a{padding:6px 0;text-decoration:underline 1.5px transparent;text-underline-offset:6px;transition:text-decoration-color .2s ease}
 .topbar nav a:hover{text-decoration-color:currentColor}
 .menuword{display:none;font:500 var(--s-small) var(--sans);background:none;border:0;padding:10px 0;color:var(--ink);cursor:pointer}
-.win{position:absolute;inset:0;z-index:1;clip-path:inset(0)}
+.win{position:absolute;inset:0;z-index:1;overflow:hidden;transform-origin:0 0}
+.win-in{position:absolute;inset:0;transform-origin:0 0}
 .win img{width:100%;height:100%;object-fit:cover;object-position:50% 24%}
 /* Blank window until the new photo comes in */
 .hero.blank{--hcol:var(--ink)!important;--scrim:0!important}
@@ -113,7 +114,7 @@ html:not(.js) .hero{height:100vh;height:100svh}
 }
 /* Laptops and desktops: the photo is portrait, so the window opens to a full-height portrait frame instead of a zoomed full-screen crop */
 @media (min-width:760px){
-  .win{left:50%;right:auto;width:min(100%,75vh);width:min(100%,75svh);transform:translateX(-50%)}
+  .win{margin-inline:auto;width:min(100%,75vh);width:min(100%,75svh)}
 }
 /* Without the scroll effect, landscape screens show the starting frame with the text beside it (tall tablets keep the full photo) */
 @media (min-width:760px) and (min-aspect-ratio:3/4){
@@ -309,7 +310,9 @@ footer{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;mi
   html.js .rise{transform:translateY(24px);transition:transform .7s cubic-bezier(.2,.7,.2,1)}
   html.js .rise.in{transform:none}
   .hero .win img{animation:drift 22s ease-in-out infinite alternate}
+  html.js .win,html.js .win-in{will-change:transform}
   @keyframes drift{from{transform:scale(1.04)}to{transform:scale(1.12) translateX(-1.5%)}}
+  @media (max-width:759px){.hero .win img{animation:none}}
 }
 </style>
 </head>
@@ -328,7 +331,7 @@ footer{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;mi
           <a href="#visit">Visit</a>
         </nav>
       </header>
-      <div class="win" id="win"><img src="img/hero-cat.webp" width="1200" height="1600" fetchpriority="high" alt="A calico shop cat resting on purple batik, with colourful fabric in the shop behind"></div>
+      <div class="win" id="win"><div class="win-in"><img src="img/hero-cat.webp" width="1200" height="1600" fetchpriority="high" alt="A calico shop cat resting on purple batik, with colourful fabric in the shop behind"></div></div>
       <div class="hero-copy">
         <h1 id="h1">Bali batik, <br>by the m<em class="s">e</em>tre</h1>
         <div class="hero-side">
@@ -494,27 +497,33 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   b.addEventListener('click',()=>{const o=n.classList.toggle('open');b.setAttribute('aria-expanded',o)});
   n.addEventListener('click',e=>{if(e.target.tagName==='A'){n.classList.remove('open');b.setAttribute('aria-expanded','false')}});})();
 
-/* Hero: the window opens to the edges */
+/* Hero: the window opens to the edges (transforms only, so phones don't repaint the photo while scrolling) */
 (function(){
   const hero=document.querySelector('.hero'),win=document.getElementById('win');
   if(reduce)return;
-  let g={};
-  function geom(){const vw=innerWidth,vh=innerHeight,phone=vw<760;let w,h,top,bot;
-    if(phone){const side=document.querySelector('.hero-side').offsetHeight||150;w=vw*.78;h=w*1.25;top=Math.max(vh*.30,170);
-      const room=vh-top-side-18-20;if(h>room){h=Math.max(120,room);w=h/1.25}bot=vh-top-h}
+  const stage=hero.querySelector('.stage'),inner=win.querySelector('.win-in'),copy=hero.querySelector('.hero-copy'),
+    side=hero.querySelector('.hero-side'),tb=hero.querySelector('.topbar'),hint=hero.querySelector('.hero-hint');
+  let g={},vis='';
+  function geom(){const vw=innerWidth,phone=vw<760,sw=stage.clientWidth||vw,vh=stage.clientHeight||innerHeight;let w,h,top,bot;
+    if(phone){const sh=side.offsetHeight||150;w=sw*.78;h=w*1.25;top=Math.max(vh*.30,170);
+      const room=vh-top-sh-18-20;if(h>room){h=Math.max(120,room);w=h/1.25}bot=vh-top-h}
     else{w=vw*.36;h=w*1.25;if(h>vh*.74){h=vh*.74;w=h/1.25}top=bot=(vh-h)/2}
-    const bw=win.offsetWidth||vw;g={vw,vh,phone,x:(bw-w)/2,top,bot,run:vh*(phone?.7:1)};
+    const W=win.offsetWidth||sw,H=win.offsetHeight||vh;
+    g={W,H,x:(W-w)/2,top,bot,run:vh*(phone?.7:1),fade:phone?5:2.4,y0:hero.offsetTop};
     hero.style.setProperty('--hb',g.bot+'px');
     hero.style.setProperty('--ht',Math.max(76,g.top-(vw*.105*2)-18)+'px');
     hero.style.setProperty('--hs',(g.top+h+18)+'px');}
-  function draw(){const p=Math.min(1,Math.max(0,-hero.getBoundingClientRect().top/g.run));const e=1-Math.pow(1-p,2);
-    const k=1-e;win.style.clipPath=`inset(${g.top*k}px ${g.x*k}px ${g.bot*k}px ${g.x*k}px)`;
-    const t=Math.max(0,1-p*2.4);const c=document.querySelector('.hero-copy');c.style.opacity=t;c.style.transform=`translateY(${-p*60}px)`;
-    c.style.visibility=t<.02?'hidden':'visible';
-    const tb=document.querySelector('.topbar');tb.style.opacity=t;tb.style.visibility=t<.02?'hidden':'visible';
-    document.querySelector('.hero-hint').style.opacity=t;}
-  geom();draw();addEventListener('resize',()=>{geom();draw()});
-  let raf=0;addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;draw()})},{passive:true});
+  function draw(){const p=Math.min(1,Math.max(0,(scrollY-g.y0)/g.run)),k=Math.pow(1-p,2);
+    const l=g.x*k,t=g.top*k,sx=(g.W-2*l)/g.W,sy=(g.H-t-g.bot*k)/g.H;
+    win.style.transform=`translate(${l}px,${t}px) scale(${sx},${sy})`;
+    inner.style.transform=`scale(${1/sx},${1/sy}) translate(${-l}px,${-t}px)`;
+    const o=Math.max(0,1-p*g.fade),v=o<.02?'hidden':'visible';
+    if(v!==vis){vis=v;copy.style.visibility=v;tb.style.visibility=v}
+    if(v==='visible'){copy.style.opacity=o;copy.style.transform=`translateY(${-p*60}px)`;tb.style.opacity=o;hint.style.opacity=o}
+    else hint.style.opacity=0;}
+  let raf=0,dirty=false;const tick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;if(dirty){dirty=false;geom()}draw()})};
+  geom();draw();addEventListener('resize',()=>{dirty=true;tick()});
+  addEventListener('scroll',tick,{passive:true});
 })();
 
 /* Parts rise into place */
