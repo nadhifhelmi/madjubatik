@@ -90,7 +90,9 @@ em.s{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--acce
 .hero h1{position:absolute;left:var(--gut);bottom:var(--hb,64px);font-size:var(--s-display);line-height:.95;color:var(--hcol,var(--bg))}
 .hero-side{position:absolute;right:var(--gutR);bottom:var(--hb,64px);width:min(28ch,26vw);display:flex;flex-direction:column;gap:20px;color:var(--hcol,var(--bg))}
 .hero-side p{font-size:var(--s-body);line-height:1.45}
-.hero-hint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:2;font-size:var(--s-small);color:var(--muted)}
+.hero-hint{position:absolute;left:50%;bottom:max(14px, env(safe-area-inset-bottom, 0px));transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 12px;font-size:var(--s-small);font-weight:500;color:var(--hcol,var(--bg));text-decoration:none;white-space:nowrap}
+.hero-hint svg{width:20px;height:20px}
+@media (min-width:760px) and (max-height:520px){.hero-hint svg{display:none}}
 html.js .hero{--hcol:var(--ink);--scrim:0}
 html.js .win::after{opacity:var(--scrim,0)}
 @media (max-width:759px){
@@ -99,12 +101,13 @@ html.js .win::after{opacity:var(--scrim,0)}
   .topbar nav.open{display:flex;position:absolute;top:64px;right:var(--gutR);flex-direction:column;gap:0;background:var(--bg);padding:8px 20px;/* taste-skill-ignore: open menu floats */box-shadow:0 10px 30px rgba(0,0,0,.18)}
   .topbar nav.open a{padding:12px 0}
   .hero h1{font-size:10.5vw;max-width:none;bottom:auto;top:var(--ht,88px)}
-  html:not(.js) .hero h1{top:auto;bottom:180px}
+  html:not(.js) .hero h1{top:auto;bottom:200px}
   .hero-side{left:var(--gut);right:var(--gutR);width:auto;top:var(--hs,auto);bottom:auto}
-  html:not(.js) .hero-side{top:auto;bottom:32px}
+  html:not(.js) .hero-side{top:auto;bottom:52px}
   .hero-side p{font-size:16px}
   .hero-side .btn{width:100%}
-  .hero-hint{display:none}
+  .hero-hint{flex-direction:row;gap:6px;font-size:14px;bottom:max(4px, env(safe-area-inset-bottom, 0px))}
+  .hero-hint svg{width:16px;height:16px}
 }
 html:not(.js) .hero{height:100vh;height:100svh}
 @media (prefers-reduced-motion:reduce){
@@ -311,6 +314,8 @@ footer{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;mi
   html.js .rise.in{transform:none}
   .hero .win img{animation:drift 22s ease-in-out infinite alternate}
   html.js .win,html.js .win-in{will-change:transform}
+  .hero-hint svg{animation:nudge 1.6s ease-in-out infinite}
+  @keyframes nudge{0%,100%{transform:translateY(-2px)}50%{transform:translateY(3px)}}
   @keyframes drift{from{transform:scale(1.04)}to{transform:scale(1.12) translateX(-1.5%)}}
   @media (max-width:759px){.hero .win img{animation:none}}
 }
@@ -339,7 +344,7 @@ footer{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;mi
           <a class="btn wa" href="https://wa.me/6287862236936" target="_blank" rel="noopener">Order on WhatsApp</a>
         </div>
       </div>
-      <p class="hero-hint" aria-hidden="true">Scroll into the shop</p>
+      <a class="hero-hint" href="#run-h"><span>Scroll into the shop</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v15M6 13l6 6 6-6"/></svg></a>
     </div>
   </section>
 
@@ -506,7 +511,7 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   let g={},vis='';
   function geom(){const vw=innerWidth,phone=vw<760,sw=stage.clientWidth||vw,vh=stage.clientHeight||innerHeight;let w,h,top,bot;
     if(phone){const sh=side.offsetHeight||150;w=sw*.78;h=w*1.25;top=Math.max(vh*.30,170);
-      const room=vh-top-sh-18-20;if(h>room){h=Math.max(120,room);w=h/1.25}bot=vh-top-h}
+      const room=vh-top-sh-18-44;if(h>room){h=Math.max(120,room);w=h/1.25}bot=vh-top-h}
     else{w=vw*.36;h=w*1.25;if(h>vh*.74){h=vh*.74;w=h/1.25}top=bot=(vh-h)/2}
     const W=win.offsetWidth||sw,H=win.offsetHeight||vh;
     g={W,H,x:(W-w)/2,top,bot,run:vh*(phone?.7:1),fade:phone?5:2.4,y0:hero.offsetTop};
@@ -518,7 +523,7 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
     win.style.transform=`translate(${l}px,${t}px) scale(${sx},${sy})`;
     inner.style.transform=`scale(${1/sx},${1/sy}) translate(${-l}px,${-t}px)`;
     const o=Math.max(0,1-p*g.fade),v=o<.02?'hidden':'visible';
-    if(v!==vis){vis=v;copy.style.visibility=v;tb.style.visibility=v}
+    if(v!==vis){vis=v;copy.style.visibility=v;tb.style.visibility=v;hint.style.visibility=v}
     if(v==='visible'){copy.style.opacity=o;copy.style.transform=`translateY(${-p*60}px)`;tb.style.opacity=o;hint.style.opacity=o}
     else hint.style.opacity=0;}
   let raf=0,dirty=false;const tick=()=>{if(!raf)raf=requestAnimationFrame(()=>{raf=0;if(dirty){dirty=false;geom()}draw()})};
