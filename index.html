@@ -18,7 +18,7 @@
 <meta property="og:url" content="https://madjubatik.com/">
 <meta property="og:image" content="https://madjubatik.com/img/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Store", "name": "Madju Batik", "alternateName": ["Madju Batik Bali", "Toko Madju", "Maju Batik"], "description": "Batik fabric shop on Jalan Sulawesi, Denpasar, Bali. Cotton, rayon and rayon voile batik by the metre, plus precut quilting packs.", "url": "https://madjubatik.com/", "image": "https://madjubatik.com/img/og.jpg", "logo": "https://madjubatik.com/img/logo.png", "telephone": "+62 878-6223-6936", "address": {"@type": "PostalAddress", "streetAddress": "Jl. Sulawesi No.19, Dauh Puri Kangin", "addressLocality": "Denpasar", "addressRegion": "Bali", "postalCode": "80112", "addressCountry": "ID"}, "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], "opens": "09:00", "closes": "17:00"}], "hasMap": "https://maps.app.goo.gl/hnqm9AmitU88s37z7", "sameAs": ["https://www.instagram.com/madjubatik", "https://www.instagram.com/madjubatik_catalog"]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Store", "name": "Madju Batik", "alternateName": ["Madju Batik Bali", "Toko Madju", "Toko Maju", "Maju Batik", "Maju Batik Fabrics"], "description": "Batik fabric shop on Jalan Sulawesi, Denpasar, Bali. Cotton, rayon and rayon voile batik by the metre, plus precut quilting packs. Ships overseas by air or sea.", "url": "https://madjubatik.com/", "image": "https://madjubatik.com/img/og.jpg", "logo": "https://madjubatik.com/img/logo.png", "telephone": "+62 878-6223-6936", "address": {"@type": "PostalAddress", "streetAddress": "Jl. Sulawesi No.19, Dauh Puri Kangin", "addressLocality": "Denpasar", "addressRegion": "Bali", "postalCode": "80112", "addressCountry": "ID"}, "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], "opens": "09:00", "closes": "17:00"}], "hasMap": "https://maps.app.goo.gl/hnqm9AmitU88s37z7", "sameAs": ["https://www.instagram.com/madjubatik", "https://www.instagram.com/madjubatik_catalog"]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Madju Batik", "alternateName": ["Madju Batik Bali", "Maju Batik"], "url": "https://madjubatik.com/"}</script>
 <style>[hidden]{display:none!important}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -256,6 +256,26 @@ html.js .rows li:not(.on) .desc{display:none}
   .v-pic{margin-inline:calc(var(--gut) * -1) calc(var(--gutR) * -1)}
 }
 
+/* ---------- Questions ---------- */
+.faq{position:relative;z-index:2;background:var(--bg);padding-block:160px 0;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;align-items:start}
+.faq-head{grid-column:1 / span 5;display:flex;flex-direction:column;gap:20px}
+.faq-head h2{font-size:var(--s-display);line-height:.98}
+.faq-head p{font-size:var(--s-small);color:var(--muted)}
+.faq-head a{color:var(--ink);font-weight:500}
+.faq-list{grid-column:7 / span 6;margin:0;border-top:1px solid var(--ink)}
+.faq-list div{padding:18px 0;border-bottom:1px solid var(--field)}
+.faq-list dt{font-weight:500}
+.faq-list dd{margin:6px 0 0;font-size:var(--s-small);max-width:54ch}
+.faq-list a{font-weight:500;white-space:nowrap}
+@media (max-width:1023px){
+  .faq{display:flex;flex-direction:column;align-items:stretch;gap:40px}
+  .faq-list{max-width:640px}
+}
+@media (max-width:759px){
+  .faq{padding-block:96px 0}
+  .faq-head h2{font-size:10vw}
+}
+
 /* ---------- Footer: photograph half, menu half ---------- */
 footer{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;min-height:100vh;min-height:100svh;background:var(--field)}
 .foot-pic{overflow:hidden}
@@ -299,7 +319,7 @@ footer{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;mi
   <section class="hero" aria-labelledby="h1">
     <div class="stage">
       <header class="topbar">
-        <a class="wordmark" href="#top" id="top" aria-label="Madju Batik, home">MadjuBatik</a>
+        <a class="wordmark" href="#top" translate="no" aria-label="Madju Batik, home">MadjuBatik</a>
         <button class="menuword" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
         <nav id="nav" aria-label="Sections">
           <a href="#sell">What we sell</a>
@@ -308,11 +328,11 @@ footer{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;mi
           <a href="#visit">Visit</a>
         </nav>
       </header>
-      <div class="win" id="win"><img src="img/hero-cat.webp" width="1200" height="1600" alt="A calico shop cat resting on purple batik, with colourful fabric in the shop behind"></div>
+      <div class="win" id="win"><img src="img/hero-cat.webp" width="1200" height="1600" fetchpriority="high" alt="A calico shop cat resting on purple batik, with colourful fabric in the shop behind"></div>
       <div class="hero-copy">
         <h1 id="h1">Bali batik, <br>by the m<em class="s">e</em>tre</h1>
         <div class="hero-side">
-          <p>Cotton, rayon and rayon voile batik, cut to your length, plus ready packs for quilters. Jl. Sulawesi 19, Denpasar.</p>
+          <p>Cotton, rayon and rayon voile batik, cut to your length, plus ready packs for quilters. <span translate="no">Jl. Sulawesi 19</span>, Denpasar.</p>
           <a class="btn wa" href="https://wa.me/6287862236936" target="_blank" rel="noopener">Order on WhatsApp</a>
         </div>
       </div>
@@ -323,8 +343,8 @@ footer{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;mi
   <!-- The address holds, the shop passes beneath -->
   <section class="run" aria-labelledby="run-h">
     <div class="run-head wrap">
-      <h2 id="run-h">Sulawesi 19</h2>
-      <p>Madju is the old spelling of maju: forward. You'll find it on our sign on Jalan Sulawesi, Denpasar's fabric street.</p>
+      <h2 id="run-h" translate="no">Sulawesi 19</h2>
+      <p><span translate="no">Madju</span> is the old spelling of <span translate="no">maju</span>: forward. You'll find it on our sign on <span translate="no">Jalan Sulawesi</span>, Denpasar's fabric street.</p>
     </div>
     <div class="panel wrap"><img class="rise" src="img/packs/shelf-red.webp" width="1050" height="1400" loading="lazy" alt="Shop shelves sorted by colour: blues on the top shelf, then reds, plums and pinks below"><p class="rise">Every wall is sorted by colour, so your blue is one look away.</p></div>
     <div class="panel wrap"><img class="rise" src="img/hands.webp" width="880" height="1100" loading="lazy" alt="Hands cutting a caramel batik print with orange scissors at the counter"><p class="rise">Cut to your length at the counter, then folded and packed by hand.</p></div>
@@ -338,7 +358,7 @@ footer{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;mi
       <p>Batik by the metre in three fabrics, packs cut for patchwork, and bulk orders. Fixed prices, no bargaining needed.</p>
     </div>
     <div class="sell-fig" aria-hidden="true">
-      <img class="on" data-k="cotton" src="img/packs/stack-shelf.webp" width="1050" height="1400" alt="">
+      <img class="on" data-k="cotton" src="img/packs/stack-shelf.webp" width="1050" height="1400" loading="lazy" alt="">
       <img data-k="rayon" src="img/rayon.webp" width="880" height="1100" loading="lazy" alt="">
       <img data-k="voile" src="img/voile.webp" width="880" height="1100" loading="lazy" alt="">
       <img data-k="cuts" src="img/packs/ribbons.webp" width="1050" height="1400" loading="lazy" alt="">
@@ -348,20 +368,20 @@ footer{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;mi
     </div>
     <div class="sell-list">
       <ul class="rows">
-        <li class="on" data-k="cotton"><button class="row" type="button" aria-expanded="true"><b>Batik cotton</b> <span>by the metre</span></button>
-          <p class="desc">Crisp and easy to sew. Our biggest range, for quilting, shirts and craft. The whole left wall of the shop.</p></li>
-        <li data-k="rayon"><button class="row" type="button" aria-expanded="false"><b>Batik rayon</b> <span>by the metre</span></button>
-          <p class="desc">Soft, with a heavy drape. Made for dresses, sarongs and loose summer clothes.</p></li>
-        <li data-k="voile"><button class="row" type="button" aria-expanded="false"><b>Rayon voile</b> <span>limited stock</span></button>
-          <p class="desc">Our lightest fabric, airy and slightly sheer. Only a few prints in right now, so <a class="wa" href="https://wa.me/6287862236936?text=Hi%20Madju%2C%20which%20rayon%20voile%20prints%20do%20you%20have%20now%3F" target="_blank" rel="noopener">message us</a> to check what's in.</p></li>
-        <li data-k="cuts"><button class="row" type="button" aria-expanded="false"><b>Fat quarter cuts</b> <span>45 × 55 cm</span></button>
-          <p class="desc">Stacks of cuts tied with ribbon, sorted into runs of one colour from light to dark.</p></li>
-        <li data-k="rolls"><button class="row" type="button" aria-expanded="false"><b>Strips</b> <span>2.5″ × 44″</span></button>
-          <p class="desc">Jelly-roll style strips, rolled by hand. Each roll mixes a range of colours. <a href="#packs">See the packs</a>.</p></li>
-        <li data-k="mixed"><button class="row" type="button" aria-expanded="false"><b>Squares, minis, scraps</b> <span>25 cm · 5″ · mixed</span></button>
-          <p class="desc">Squares of 25 × 25 cm, minis of 5 × 5 inches, and scraps in mixed sizes for appliqué and small projects.</p></li>
-        <li data-k="bulk"><button class="row" type="button" aria-expanded="false"><b>Bulk orders</b> <span>from 45 m</span></button>
-          <p class="desc">Hundreds more prints from our sample books, made to order. <a href="#bulk">How bulk orders work</a>.</p></li>
+        <li class="on" data-k="cotton"><button class="row" type="button" aria-controls="sell-cotton" aria-expanded="true"><b>Batik cotton</b> <span>by the metre</span></button>
+          <p class="desc" id="sell-cotton">Crisp and easy to sew. Our biggest range, for quilting, shirts and craft. The whole left wall of the shop.</p></li>
+        <li data-k="rayon"><button class="row" type="button" aria-controls="sell-rayon" aria-expanded="false"><b>Batik rayon</b> <span>by the metre</span></button>
+          <p class="desc" id="sell-rayon">Soft, with a heavy drape. Made for dresses, sarongs and loose summer clothes.</p></li>
+        <li data-k="voile"><button class="row" type="button" aria-controls="sell-voile" aria-expanded="false"><b>Rayon voile</b> <span>limited stock</span></button>
+          <p class="desc" id="sell-voile">Our lightest fabric, airy and slightly sheer. Only a few prints in right now, so <a class="wa" href="https://wa.me/6287862236936?text=Hi%20Madju%2C%20which%20rayon%20voile%20prints%20do%20you%20have%20now%3F" target="_blank" rel="noopener">message us</a> to check what's in.</p></li>
+        <li data-k="cuts"><button class="row" type="button" aria-controls="sell-cuts" aria-expanded="false"><b>Fat quarter cuts</b> <span>45&nbsp;×&nbsp;55&nbsp;cm</span></button>
+          <p class="desc" id="sell-cuts">Stacks of cuts tied with ribbon, sorted into runs of one colour from light to dark.</p></li>
+        <li data-k="rolls"><button class="row" type="button" aria-controls="sell-rolls" aria-expanded="false"><b>Strips</b> <span>2.5″&nbsp;×&nbsp;44″</span></button>
+          <p class="desc" id="sell-rolls">Jelly-roll style strips, rolled by hand. Each roll mixes a range of colours. <a href="#packs">See the packs</a>.</p></li>
+        <li data-k="mixed"><button class="row" type="button" aria-controls="sell-mixed" aria-expanded="false"><b>Squares, minis, scraps</b> <span>25&nbsp;cm · 5″ · mixed</span></button>
+          <p class="desc" id="sell-mixed">Squares of 25&nbsp;×&nbsp;25&nbsp;cm, minis of 5&nbsp;×&nbsp;5&nbsp;inches, and scraps in mixed sizes for appliqué and small projects.</p></li>
+        <li data-k="bulk"><button class="row" type="button" aria-controls="sell-bulk" aria-expanded="false"><b>Bulk orders</b> <span>from 45&nbsp;m</span></button>
+          <p class="desc" id="sell-bulk">Hundreds more prints from our sample books, made to order. <a href="#bulk">How bulk orders work</a>.</p></li>
       </ul>
     </div>
   </section>
@@ -373,15 +393,15 @@ footer{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;mi
       <p>Batik cotton cut to standard quilting sizes, sorted into colour runs and tied with ribbon by hand. Open the pack and start sewing.</p>
     </div>
     <div class="pk">
-      <figure class="pk-a rise"><img src="img/packs/rolls-green.webp" width="1050" height="1400" loading="lazy" alt="Strip rolls of batik tied with cream ribbon, stacked in red, green, pink and pastel runs on a dark green batik backdrop"><figcaption><b>Strip rolls</b> <span>2.5″ × 44″</span></figcaption></figure>
+      <figure class="pk-a rise"><img src="img/packs/rolls-green.webp" width="1050" height="1400" loading="lazy" alt="Strip rolls of batik tied with cream ribbon, stacked in red, green, pink and pastel runs on a dark green batik backdrop"><figcaption><b>Strip rolls</b> <span>2.5″&nbsp;×&nbsp;44″</span></figcaption></figure>
       <div class="pk-side">
         <div>
           <p class="sizes-cap">Pack sizes</p>
           <dl class="sizes">
-            <div><dt>Strips</dt> <dd>2.5″ × 44″</dd></div>
-            <div><dt>Squares</dt> <dd>25 × 25 cm</dd></div>
-            <div><dt>Minis</dt> <dd>5″ × 5″</dd></div>
-            <div><dt>Cuts</dt> <dd>45 × 55 cm</dd></div>
+            <div><dt>Strips</dt> <dd>2.5″&nbsp;×&nbsp;44″</dd></div>
+            <div><dt>Squares</dt> <dd>25&nbsp;×&nbsp;25&nbsp;cm</dd></div>
+            <div><dt>Minis</dt> <dd>5″&nbsp;×&nbsp;5″</dd></div>
+            <div><dt>Cuts</dt> <dd>45&nbsp;×&nbsp;55&nbsp;cm</dd></div>
             <div><dt>Scraps</dt> <dd>mixed sizes</dd></div>
           </dl>
         </div>
@@ -409,20 +429,36 @@ footer{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;mi
     </div>
   </section>
 
+  <!-- Questions -->
+  <section class="faq wrap" id="questions" aria-labelledby="faq-h">
+    <div class="faq-head">
+      <h2 id="faq-h">Good to kn<em class="s">o</em>w</h2>
+      <p>Anything else? <a href="https://wa.me/6287862236936" target="_blank" rel="noopener">Ask us on WhatsApp</a>.</p>
+    </div>
+    <dl class="faq-list">
+      <div><dt>Do you ship overseas?</dt> <dd>Yes, by air or by sea. Sea is slower but costs less for big orders. Message us on WhatsApp with what you'd like and your country, and we'll send you a shipping quote.</dd></div>
+      <div><dt>How do I order?</dt> <dd>Message us on WhatsApp at <a href="https://wa.me/6287862236936" target="_blank" rel="noopener">+62 878-6223-6936</a>. Tell us what you're looking for and we'll send photos of what's in stock.</dd></div>
+      <div><dt>How do I pay?</dt> <dd>Most customers pay by bank transfer or with Wise.</dd></div>
+      <div><dt>How wide is the fabric?</dt> <dd>Batik cotton and batik rayon are 112–115&nbsp;cm wide. Rayon voile is 140&nbsp;cm wide.</dd></div>
+      <div><dt>Can I bargain?</dt> <dd>No need. Our prices are fixed.</dd></div>
+    </dl>
+  </section>
+
   <!-- Visit -->
   <section class="visit wrap" id="visit" aria-labelledby="visit-h">
     <div class="v-text">
       <h2 id="visit-h">Come and feel the fabric</h2>
-      <address>Jl. Sulawesi No. 19, Dauh Puri Kangin <br>Denpasar Barat, Bali 80112</address>
+      <address translate="no">Jl. Sulawesi No. 19, Dauh Puri Kangin <br>Denpasar Barat, Bali 80112</address>
       <dl class="v-rows">
         <div><dt>Opening hours</dt> <dd><span class="v-day">Monday to Saturday, 09.00–17.00</span> <span class="v-day">Sunday, closed</span> <span class="v-note">We may be closed on public and religious holidays, so please <a href="https://maps.app.goo.gl/hnqm9AmitU88s37z7" target="_blank" rel="noopener">check Google Maps</a> before you come.</span></dd></div>
-        <div><dt>Finding us</dt> <dd>Across the road from Pasar Badung. Look for the tall white Maju Batik Fabrics sign over the street, and the brown signs above our door.</dd></div>
+        <div><dt>Finding us</dt> <dd>Across the road from <span translate="no">Pasar Badung</span>. Look for the tall white <span translate="no">Maju Batik Fabrics</span> sign over the street, and the brown signs above our door.</dd></div>
         <div><dt>Inside</dt> <dd>Cotton on the left wall, jelly rolls and bundles at the back. We cut to your length at the counter.</dd></div>
         <div><dt>Call</dt> <dd><a href="tel:+6287862236936">+62 878-6223-6936</a></dd></div>
       </dl>
       <div class="v-acts">
         <a class="btn" href="https://www.google.com/maps/dir/?api=1&amp;destination=Madju%20Batik%2C%20Jl.%20Sulawesi%20No.19%2C%20Denpasar&amp;destination_place_id=ChIJyZhpr5hA0i0R7PMfYQ_Nhho" target="_blank" rel="noopener">Get directions</a>
         <button class="v-link" id="v-copy" type="button" hidden>Copy address</button>
+        <span class="sr" id="v-said" aria-live="polite"></span>
       </div>
     </div>
     <figure class="v-pic"><img src="img/front-door.webp" width="1700" height="1271" loading="lazy" alt="The shop front on Jalan Sulawesi: the brown Maju Batik Fabrics sign and the old Toko Madju sign above the open doorway, batik on the shelves inside"></figure>
@@ -432,7 +468,7 @@ footer{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;mi
 <footer>
   <div class="foot-pic"><img src="img/inside.webp" width="880" height="1100" loading="lazy" alt="Inside Madju Batik: stacks of folded batik and rails of hanging fabric"></div>
   <div class="foot-menu">
-    <a class="wordmark" href="#top" aria-label="Madju Batik, back to top">MadjuBatik</a>
+    <a class="wordmark" href="#top" translate="no" aria-label="Madju Batik, back to top">MadjuBatik</a>
     <ul>
       <li><a href="#sell">What we sell</a></li>
       <li><a href="#packs">Ready packs</a></li>
@@ -444,7 +480,7 @@ footer{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;mi
       <div><b>Order</b> <a href="https://wa.me/6287862236936" target="_blank" rel="noopener">WhatsApp +62 878-6223-6936</a> <br><a href="tel:+6287862236936">Call +62 878-6223-6936</a> <br>Monday to Saturday, 09.00–17.00</div>
       <div><b>Follow</b> <a href="https://instagram.com/madjubatik" target="_blank" rel="noopener">@madjubatik</a> <br>New prints: <a href="https://instagram.com/madjubatik_catalog" target="_blank" rel="noopener">@madjubatik_catalog</a></div>
     </div>
-    <p class="legal">© 2026 Madju Batik · Jl. Sulawesi 19, Denpasar, Bali</p>
+    <p class="legal">© 2026 <span translate="no">Madju Batik · Jl. Sulawesi 19</span>, Denpasar, Bali</p>
   </div>
 </footer>
 
@@ -500,7 +536,8 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 /* Visit: copy the address */
 (function(){const c=document.getElementById('v-copy'),addr='Madju Batik, Jl. Sulawesi No. 19, Dauh Puri Kangin, Denpasar Barat, Bali 80112';
   if(navigator.clipboard&&window.isSecureContext){c.hidden=false;
-    c.addEventListener('click',()=>navigator.clipboard.writeText(addr).then(()=>{c.textContent='Address copied';setTimeout(()=>{c.textContent='Copy address'},2000)},()=>{}));}
+    const said=document.getElementById('v-said');
+    c.addEventListener('click',()=>navigator.clipboard.writeText(addr).then(()=>{c.textContent='Address copied';said.textContent='Address copied';setTimeout(()=>{c.textContent='Copy address';said.textContent=''},2000)},()=>{}));}
 })();
 
 /* Phone: the order button appears once the hero has gone */
