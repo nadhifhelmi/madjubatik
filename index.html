@@ -180,6 +180,11 @@ html:not(.js) .hero{height:100vh;height:100svh}
 .desc{font-size:var(--s-small);max-width:40ch;color:var(--ink);padding:0 0 14px 6px}
 html.js .rows li:not(.on) .desc{display:none}
 .desc a{font-weight:500}
+/* Laptops: keep the photo pinned and whole while the last rows are read (it used to slide up and get cut) */
+@media (min-width:760px){
+  .sell{padding-bottom:40px}
+  .sell-list{padding-bottom:34vh}
+}
 @media (max-width:759px){
   .sell{display:block;padding-block:96px 96px}
   .sell-fig{position:sticky;top:0;z-index:3;aspect-ratio:4/3;max-height:none;margin-inline:calc(var(--gut) * -1) calc(var(--gutR) * -1);height:auto}
